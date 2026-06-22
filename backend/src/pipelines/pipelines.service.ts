@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { PrismaService } from '../prisma/prisma.service';
 import { ProjectsService } from '../projects/projects.service';
 import { CreatePipelineDto } from './dto/create-pipeline.dto';
+import { parsePipelineYaml } from './utils/yaml-parser';
 
 @Injectable()
 export class PipelinesService {
@@ -11,8 +12,10 @@ export class PipelinesService {
   ) {}
 
   async create(userId: string, projectId: string, dto: CreatePipelineDto) {
-    // reuses ownership check from ProjectsService
     await this.projectsService.findOne(userId, projectId);
+
+    // validate YAML structure before saving — fail fast
+    parsePipelineYaml(dto.yamlConfig);
 
     return this.prisma.pipeline.create({
       data: {
@@ -47,5 +50,10 @@ export class PipelinesService {
     }
 
     return pipeline;
+  }
+
+  // expose parsed config for the worker to use later
+  getParsedConfig(yamlConfig: string) {
+    return parsePipelineYaml(yamlConfig);
   }
 }
