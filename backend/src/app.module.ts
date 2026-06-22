@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { ProjectsModule } from './projects/projects.module';
 import { PipelinesModule } from './pipelines/pipelines.module';
+import { RunsModule } from './runs/runs.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PipelinesModule } from './pipelines/pipelines.module';
     AuthModule,
     ProjectsModule,
     PipelinesModule,
+    RunsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
