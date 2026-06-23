@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProjectsModule } from './projects/projects.module';
 import { PipelinesModule } from './pipelines/pipelines.module';
 import { RunsModule } from './runs/runs.module';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { RunsModule } from './runs/runs.module';
     ProjectsModule,
     PipelinesModule,
     RunsModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [AppService],
