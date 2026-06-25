@@ -8,6 +8,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { PipelinesModule } from './pipelines/pipelines.module';
 import { RunsModule } from './runs/runs.module';
 import { QueueModule } from './queue/queue.module';
+import { LogsModule } from './logs/logs.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { QueueModule } from './queue/queue.module';
     PipelinesModule,
     RunsModule,
     QueueModule,
+    LogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
