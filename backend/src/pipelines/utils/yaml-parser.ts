@@ -19,6 +19,10 @@ export function parsePipelineYaml(yamlString: string): PipelineConfig {
     throw new BadRequestException('Pipeline config must have a "name" string');
   }
 
+  if (!parsed.repo || typeof parsed.repo !== 'string') {
+    throw new BadRequestException('Pipeline config must have a "repo" URL string');
+  }
+
   if (!Array.isArray(parsed.steps) || parsed.steps.length === 0) {
     throw new BadRequestException('Pipeline config must have a non-empty "steps" array');
   }

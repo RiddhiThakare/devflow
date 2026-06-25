@@ -5,5 +5,6 @@ export interface PipelineStep {
 
 export interface PipelineConfig {
   name: string;
+  repo: string;
   steps: PipelineStep[];
 }
