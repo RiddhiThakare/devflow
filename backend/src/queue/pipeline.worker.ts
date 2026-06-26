@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { parse } from 'yaml';
 import { cloneRepo, runStepInContainer } from './docker-executor';
 import { createWorkspace, cleanupWorkspace } from './workspace-manager';
+import { LogsGateway } from '../logs/logs.gateway';
 
 const prisma = new PrismaClient();
 
@@ -16,6 +17,24 @@ function sanitizeForPostgres(text: string): string {
   return text.replace(/\u0000/g, '');
 }
 
+let logsGateway: LogsGateway | null = null;
+
+export function setLogsGateway(gateway: LogsGateway) {
+  logsGateway = gateway;
+}
+
+function emitLog(runId: string, line: string) {
+  if (logsGateway) {
+    logsGateway.emitLogLine(runId, line);
+  }
+}
+
+function emitStatus(runId: string, status: string) {
+  if (logsGateway) {
+    logsGateway.emitStatusUpdate(runId, status);
+  }
+}
+
 async function processJob(job: Job<JobData>) {
   const { runId, yamlConfig } = job.data;
 
@@ -25,33 +44,37 @@ async function processJob(job: Job<JobData>) {
     where: { id: runId },
     data: { status: 'RUNNING' },
   });
+  emitStatus(runId, 'RUNNING');
 
   let logs = '';
   let workspacePath: string | null = null;
 
   try {
     const config = parse(yamlConfig);
-
     workspacePath = createWorkspace(runId);
 
-    // implicit first step — clone the repo
-    logs += `\n--- Cloning repository ---\n$ git clone ${config.repo}\n`;
+    const cloneHeader = `\n--- Cloning repository ---\n$ git clone ${config.repo}\n`;
+    logs += cloneHeader;
+    emitLog(runId, cloneHeader);
+
     const cloneOutput = await cloneRepo(config.repo, workspacePath);
     logs += cloneOutput;
+    emitLog(runId, cloneOutput);
 
     await prisma.pipelineRun.update({
       where: { id: runId },
       data: { logs: sanitizeForPostgres(logs) },
     });
 
-    // user-defined steps, now running inside the cloned workspace
     for (const step of config.steps) {
-      logs += `\n--- Running step: ${step.name} ---\n`;
-      logs += `$ ${step.run}\n`;
+      const stepHeader = `\n--- Running step: ${step.name} ---\n$ ${step.run}\n`;
+      logs += stepHeader;
+      emitLog(runId, stepHeader);
       console.log(`Step: ${step.name} -> ${step.run}`);
 
       const output = await runStepInContainer(step.run, workspacePath);
       logs += output;
+      emitLog(runId, output);
 
       await prisma.pipelineRun.update({
         where: { id: runId },
@@ -66,10 +89,13 @@ async function processJob(job: Job<JobData>) {
         finishedAt: new Date(),
       },
     });
+    emitStatus(runId, 'SUCCESS');
 
     console.log(`Run ${runId} completed successfully`);
   } catch (err) {
-    logs += `\nError: ${err.message}\n`;
+    const errorLine = `\nError: ${err.message}\n`;
+    logs += errorLine;
+    emitLog(runId, errorLine);
 
     await prisma.pipelineRun.update({
       where: { id: runId },
@@ -79,6 +105,7 @@ async function processJob(job: Job<JobData>) {
         finishedAt: new Date(),
       },
     });
+    emitStatus(runId, 'FAILED');
 
     console.error(`Run ${runId} failed:`, err.message);
   } finally {
