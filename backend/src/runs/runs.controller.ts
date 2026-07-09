@@ -28,4 +28,9 @@ export class RunsController {
   findOne(@Request() req: any, @Param('id') id: string) {
     return this.runsService.findOne(req.user.userId, id);
   }
+
+  @Get('projects/:projectId/metrics')
+  getMetrics(@Request() req: any, @Param('projectId') projectId: string) {
+    return this.runsService.getMetrics(req.user.userId, projectId);
+  }
 }
