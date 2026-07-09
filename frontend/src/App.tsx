@@ -2,17 +2,11 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
-
-function DashboardPage() {
-  return <div className="p-8 text-2xl text-white bg-gray-950 min-h-screen">Dashboard (coming next)</div>;
-}
-
-function ProjectPage() {
-  return <div className="p-8 text-2xl text-white bg-gray-950 min-h-screen">Project Page (coming next)</div>;
-}
+import DashboardPage from './pages/DashboardPage';
+import ProjectPage from './pages/ProjectPage';
 
 function RunPage() {
-  return <div className="p-8 text-2xl text-white bg-gray-950 min-h-screen">Run Page (coming next)</div>;
+  return <div className="p-8 text-2xl text-white bg-gray-950 min-h-screen">Run Page (coming next step)</div>;
 }
 
 function App() {
