@@ -6,9 +6,14 @@ import { LogsGateway } from './logs/logs.gateway';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  });
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
-  // grab the Nest-managed gateway instance and hand it to the worker
   const logsGateway = app.get(LogsGateway);
   setLogsGateway(logsGateway);
 
