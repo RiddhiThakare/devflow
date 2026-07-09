@@ -4,10 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ProjectPage from './pages/ProjectPage';
-
-function RunPage() {
-  return <div className="p-8 text-2xl text-white bg-gray-950 min-h-screen">Run Page (coming next step)</div>;
-}
+import RunPage from './pages/RunPage';
 
 function App() {
   return (
