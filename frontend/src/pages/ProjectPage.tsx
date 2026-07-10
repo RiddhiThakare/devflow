@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import api from '../api/axios';
+import MetricsPanel from '../components/MetricsPanel';
 
 interface Pipeline {
   id: string;
@@ -192,6 +193,14 @@ export default function ProjectPage() {
             )}
           </div>
         </div>
+        {/* Metrics */}
+        {projectId && (
+          <div className="mt-8">
+            <h2 className="text-white font-medium mb-4">Project Metrics</h2>
+            <MetricsPanel projectId={projectId} />
+          </div>
+        )}
+        
       </div>
     </div>
   );
