@@ -13,17 +13,21 @@ let rateLimiter: RateLimiterRedis;
 
 function getRateLimiter(config: ConfigService): RateLimiterRedis {
   if (!rateLimiter) {
-    const redisClient = new Redis({
-      host: config.get<string>('REDIS_HOST') || 'localhost',
-      port: config.get<number>('REDIS_PORT') || 6379,
-      enableOfflineQueue: false,
-    });
+    const redisUrl = config.get<string>('REDIS_URL');
+
+    const redisClient = redisUrl
+      ? new Redis(redisUrl, { enableOfflineQueue: false })
+      : new Redis({
+          host: config.get<string>('REDIS_HOST') || 'localhost',
+          port: config.get<number>('REDIS_PORT') || 6379,
+          enableOfflineQueue: false,
+        });
 
     rateLimiter = new RateLimiterRedis({
       storeClient: redisClient,
       keyPrefix: 'devflow_rl',
-      points: 10,       // 10 requests
-      duration: 60,     // per 60 seconds
+      points: 10,
+      duration: 60,
     });
   }
   return rateLimiter;

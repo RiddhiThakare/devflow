@@ -116,11 +116,17 @@ async function processJob(job: Job<JobData>) {
 }
 
 export function startPipelineWorker() {
+  const redisUrl = process.env.REDIS_URL;
+
+  const connection = redisUrl
+    ? redisUrl
+    : {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: Number(process.env.REDIS_PORT) || 6379,
+      };
+
   const worker = new Worker<JobData>('pipeline-execution', processJob, {
-    connection: {
-      host: process.env.REDIS_HOST || 'localhost',
-      port: Number(process.env.REDIS_PORT) || 6379,
-    },
+    connection,
     concurrency: 2,
   });
 
