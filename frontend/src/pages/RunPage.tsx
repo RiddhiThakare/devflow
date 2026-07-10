@@ -64,7 +64,7 @@ export default function RunPage() {
   }, [runId]);
 
   function connectSocket(runId: string) {
-    const socket = io('http://localhost:3000');
+    const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:3000');
     socketRef.current = socket;
 
     socket.on('connect', () => {
