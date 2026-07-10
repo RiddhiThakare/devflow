@@ -8,12 +8,14 @@ import {
 } from '@nestjs/common';
 import { RunsService } from './runs.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RateLimitGuard } from '../common/guards/rate-limit.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller()
 export class RunsController {
   constructor(private runsService: RunsService) {}
 
+  @UseGuards(RateLimitGuard)
   @Post('pipelines/:pipelineId/trigger')
   trigger(@Request() req: any, @Param('pipelineId') pipelineId: string) {
     return this.runsService.trigger(req.user.userId, pipelineId);
