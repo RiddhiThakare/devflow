@@ -15,13 +15,24 @@ function getRateLimiter(config: ConfigService): RateLimiterRedis {
   if (!rateLimiter) {
     const redisUrl = config.get<string>('REDIS_URL');
 
-    const redisClient = redisUrl
-      ? new Redis(redisUrl, { enableOfflineQueue: false })
-      : new Redis({
-          host: config.get<string>('REDIS_HOST') || 'localhost',
-          port: config.get<number>('REDIS_PORT') || 6379,
-          enableOfflineQueue: false,
-        });
+    let redisClient: Redis;
+
+    if (redisUrl) {
+      const url = new URL(redisUrl);
+      redisClient = new Redis({
+        host: url.hostname,
+        port: Number(url.port) || 6379,
+        password: url.password || undefined,
+        tls: url.protocol === 'rediss:' ? {} : undefined,
+        enableOfflineQueue: false,
+      });
+    } else {
+      redisClient = new Redis({
+        host: config.get<string>('REDIS_HOST') || 'localhost',
+        port: config.get<number>('REDIS_PORT') || 6379,
+        enableOfflineQueue: false,
+      });
+    }
 
     rateLimiter = new RateLimiterRedis({
       storeClient: redisClient,
