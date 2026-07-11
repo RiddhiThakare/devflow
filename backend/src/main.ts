@@ -15,12 +15,23 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
- app.enableCors({
-  origin: [
-    'https://https://devflow-gamma-sable.vercel.app',
-    'https://devflow.vercel.app', // add this too in case Vercel gives you a cleaner URL
-    'http://localhost:5173',
-  ],
+app.enableCors({
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'https://devflow-gamma-sable.vercel.app',
+    ];
+
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      origin.endsWith('.vercel.app')
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 });
 
