@@ -15,10 +15,11 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors({
+ app.enableCors({
   origin: [
-    'https://devflow-5c80zvw5c-riddhithakare.vercel.app',
-    'http://localhost:5173', // keep local dev working
+    'https://devflow-92yv8hq7j-riddhithakare.vercel.app',
+    'https://devflow.vercel.app', // add this too in case Vercel gives you a cleaner URL
+    'http://localhost:5173',
   ],
   credentials: true,
 });
