@@ -17,7 +17,7 @@ async function bootstrap() {
 
  app.enableCors({
   origin: [
-    'https://devflow-92yv8hq7j-riddhithakare.vercel.app',
+    'https://https://devflow-gamma-sable.vercel.app',
     'https://devflow.vercel.app', // add this too in case Vercel gives you a cleaner URL
     'http://localhost:5173',
   ],
