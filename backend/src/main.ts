@@ -17,7 +17,7 @@ async function bootstrap() {
 
   app.enableCors({
   origin: [
-    'devflow-5c80zvw5c-riddhithakare.vercel.app',
+    'https://devflow-5c80zvw5c-riddhithakare.vercel.app',
     'http://localhost:5173', // keep local dev working
   ],
   credentials: true,
