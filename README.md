@@ -5,7 +5,6 @@ A full-stack CI/CD platform that lets developers define pipelines in YAML, execu
 **Live Demo:** [devflow-gamma-sable.vercel.app](https://devflow-gamma-sable.vercel.app)  
 **Backend API:** [devflow-production-ee94.up.railway.app](https://devflow-production-ee94.up.railway.app/health)
 
----
 
 ## Features
 
@@ -18,7 +17,7 @@ A full-stack CI/CD platform that lets developers define pipelines in YAML, execu
 - Redis-backed rate limiting on pipeline triggers
 - Deployed on Railway (backend + PostgreSQL + Redis) and Vercel (frontend)
 
----
+
 
 ## Tech Stack
 
@@ -33,7 +32,6 @@ A full-stack CI/CD platform that lets developers define pipelines in YAML, execu
 | Auth | JWT + bcrypt |
 | Deployment | Railway + Vercel |
 
----
 
 ## Pipeline YAML Format
 
@@ -49,7 +47,7 @@ steps:
     run: npm run build
 ```
 
----
+
 
 ## Local Development
 
@@ -80,10 +78,14 @@ npm run dev
 ### Environment Variables
 
 **backend/.env**
+```
 DATABASE_URL=postgresql://postgres:password@localhost:5432/devflow
 JWT_SECRET=your-secret-key
 REDIS_HOST=localhost
 REDIS_PORT=6379
+```
 
 **frontend/.env**
+```
 VITE_API_URL=http://localhost:3000
+```
